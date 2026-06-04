@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home | StudyHub{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center" style="min-height: 90vh;">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h1 class="display-3 fw-bold mb-4">
+                    Learn From <span class="text-warning">India's Best Teachers</span>
+                </h1>
+                <p class="lead mb-4">
+                    Join StudyHub - India's fastest-growing learning platform. 
+                    Learn programming, web development, data science, and more from industry experts.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{% url 'register' %}" class="btn btn-warning btn-lg px-5">
+                        Start Learning Free <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                    <a href="{% url 'course_list' %}" class="btn btn-outline-light btn-lg px-5">
+                        Browse Courses
+                    </a>
+                </div>
+                <div class="mt-5">
+                    <div class="d-flex gap-5">
+                        <div>
+                            <h2 class="h1 mb-0 fw-bold">10K+</h2>
+                            <p class="mb-0">Happy Students</p>
+                        </div>
+                        <div>
+                            <h2 class="h1 mb-0 fw-bold">100+</h2>
+                            <p class="mb-0">Courses</p>
+                        </div>
+                        <div>
+                            <h2 class="h1 mb-0 fw-bold">50+</h2>
+                            <p class="mb-0">Expert Teachers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-5 mt-lg-0" data-aos="fade-left">
+                <img src="https://img.freepik.com/free-vector/online-education-concept-illustration_114360-7393.jpg" 
+                     alt="Learning" class="img-fluid rounded-4 shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="fw-bold">Browse Top Categories</h2>
+            <p class="text-muted">Choose from 500+ courses in various categories</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="card category-card text-center p-4 h-100">
+                    <i class="fas fa-code fa-3x mb-3 text-primary"></i>
+                    <h5>Programming</h5>
+                    <p class="text-muted mb-0">100+ Courses</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="card category-card text-center p-4 h-100">
+                    <i class="fab fa-python fa-3x mb-3 text-info"></i>
+                    <h5>Python</h5>
+                    <p class="text-muted mb-0">150+ Courses</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="card category-card text-center p-4 h-100">
+                    <i class="fab fa-js fa-3x mb-3 text-warning"></i>
+                    <h5>JavaScript</h5>
+                    <p class="text-muted mb-0">180+ Courses</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="card category-card text-center p-4 h-100">
+                    <i class="fas fa-database fa-3x mb-3 text-success"></i>
+                    <h5>Data Science</h5>
+                    <p class="text-muted mb-0">150+ Courses</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Featured Courses -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="fw-bold">
+            <i class="fa-solid fa-fire" style="color: rgb(255, 141, 59);"></i> Most Popular Courses</h2>
+            <p class="text-muted">Join thousands of students learning these top-rated courses</p>
+        </div>
+        <div class="row g-4">
+            {% if courses %}
+                {% for course in courses %}
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
+                    <div class="card course-card h-100">
+                        <!-- Thumbnail with error handling -->
+                        {% if course.thumbnail %}
+                            <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-graduation-cap fa-4x"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-primary">{{ course.get_level_display }}</span>
+                                {% if course.price == 0 %}
+                                    <span class="badge bg-success">Free</span>
+                                {% else %}
+                                    <span class="fw-bold text-primary">₹{{ course.price }}</span>
+                                {% endif %}
+                            </div>
+                            <h5 class="card-title">{{ course.title|truncatechars:50 }}</h5>
+                            <p class="card-text text-muted small">{{ course.description|truncatewords:15 }}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <i class="fas fa-user-graduate text-muted"></i>
+                                    <small class="text-muted">{{ course.enrollments.count }} students</small>
+                                </div>
+                                <div>
+                                    <i class="fas fa-video text-muted"></i>
+                                    <small class="text-muted">{{ course.get_total_lectures }} lectures</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-0 pb-3">
+                            <a href="{% url 'course_detail' course.slug %}" class="btn btn-primary w-100">
+                                {% if course.price == 0 %}Start Learning{% else %}Enroll Now{% endif %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No courses available yet. Check back soon!
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'course_list' %}" class="btn btn-outline-primary btn-lg px-5">View All Courses</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card feature-card h-100 text-center p-4">
+                    <i class="fas fa-chalkboard-teacher fa-3x text-primary mb-3"></i>
+                    <h5>Expert Instructors</h5>
+                    <p class="text-muted">Learn from industry experts with years of experience</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card feature-card h-100 text-center p-4">
+                    <i class="fa-solid fa-award fa-3x text-primary mb-3"></i>
+                    <h5>For Better Future</h5>
+                    <p class="text-muted">Keep learning daily and unlock achievement stars</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card feature-card h-100 text-center p-4">
+                    <i  class="fa-regular fa-clock fa-3x text-primary mb-3"></i>
+                    <h5>Learn at Your Pace</h5>
+                    <p class="text-muted">Lifetime access with flexible learning schedule</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+ 
+       
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-section {
+            min-height: auto;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .display-3 {
+            font-size: 2rem;
+        }
+        
+        .d-flex.gap-5 {
+            justify-content: center;
+        }
+        
+        .category-card {
+            margin-bottom: 15px;
+        }
+    }
+</style>
+{% endblock %}

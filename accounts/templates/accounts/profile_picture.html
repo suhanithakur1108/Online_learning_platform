@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Change Profile Picture | StudyHub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile-picture.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-picture-container">
+    <div class="profile-picture-card">
+        <div class="profile-picture-header">
+            <i class="fas fa-camera fa-2x mb-2"></i>
+            <h3>Change Profile Picture</h3>
+            <p>Upload a new profile picture</p>
+        </div>
+        
+        <div class="profile-preview">
+            <!-- Current Profile Picture -->
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" class="current-avatar" alt="Current Profile Picture">
+            {% else %}
+                <div class="avatar-placeholder">
+                    <i class="fas fa-user"></i>
+                </div>
+            {% endif %}
+            <div class="current-label">Current Picture</div>
+            
+            <!-- Image Preview -->
+            <div class="preview-container">
+                <div class="preview-title">Preview</div>
+                <img id="previewImage" class="preview-image" src="#" alt="Preview">
+            </div>
+        </div>
+        
+        <div class="card-body p-4">
+            <!-- Info Box -->
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <p>Supported formats: JPEG, PNG, GIF, WEBP. Max size: 5MB</p>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" id="uploadForm">
+                {% csrf_token %}
+                
+                <div class="file-input-wrapper">
+                    <div class="file-input-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Choose Image
+                        <input type="file" name="profile_picture" id="id_profile_picture" accept="image/*">
+                    </div>
+                    <div class="file-name" id="fileName">No file chosen</div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" id="submitBtn" class="btn-upload" disabled>
+                        <i class="fas fa-upload"></i> Upload Picture
+                    </button>
+                    <a href="{% url 'profile' %}" class="btn-cancel">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+            
+            {% if user.profile_picture %}
+            <div class="text-center mt-3">
+                <button id="removeBtn" class="btn-remove">
+                    <i class="fas fa-trash"></i> Remove Picture
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/profile-picture.js' %}"></script>
+{% endblock %}

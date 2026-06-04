@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Courses | StudyHub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/course-list.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Explore Our Courses</h1>
+        <p class="lead">Discover thousands of courses from expert instructors</p>
+    </div>
+</section>
+
+<div class="container mb-5">
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3">
+            <div class="filter-sidebar">
+                <h5 class="mb-3"><i class="fas fa-filter"></i> Filters</h5>
+                
+                <!-- Category Filter -->
+                <div class="filter-section">
+                    <div class="filter-title">Categories</div>
+                    <ul class="category-filter">
+                        <li>
+                            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}" class="{% if not request.GET.category %}active{% endif %}">
+                                <i class="fas fa-th-large"></i> All Categories
+                            </a>
+                        </li>
+                        {% for category in categories %}
+                        <li>
+                            <a href="?category={{ category.slug }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                               class="{% if request.GET.category == category.slug %}active{% endif %}">
+                                <i class="{{ category.icon }}"></i> {{ category.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <!-- Level Filter -->
+                <div class="filter-section">
+                    <div class="filter-title">Level</div>
+                    <div class="level-checkbox">
+                        <input type="checkbox" id="level-beginner" value="beginner" class="level-filter">
+                        <label for="level-beginner">Beginner</label>
+                    </div>
+                    <div class="level-checkbox">
+                        <input type="checkbox" id="level-intermediate" value="intermediate" class="level-filter">
+                        <label for="level-intermediate">Intermediate</label>
+                    </div>
+                    <div class="level-checkbox">
+                        <input type="checkbox" id="level-advanced" value="advanced" class="level-filter">
+                        <label for="level-advanced">Advanced</label>
+                    </div>
+                </div>
+                
+                <!-- Price Filter -->
+                <div class="filter-section">
+                    <div class="filter-title">Price</div>
+                    <div class="price-option">
+                        <input type="radio" name="price" value="all" id="price-all" checked>
+                        <label for="price-all">All</label>
+                    </div>
+                    <div class="price-option">
+                        <input type="radio" name="price" value="free" id="price-free">
+                        <label for="price-free">Free</label>
+                    </div>
+                    <div class="price-option">
+                        <input type="radio" name="price" value="paid" id="price-paid">
+                        <label for="price-paid">Paid</label>
+                    </div>
+                </div>
+                
+                <!-- Reset Filters -->
+                <button class="btn btn-outline-primary w-100 mt-3" id="resetFilters">
+                    <i class="fas fa-redo-alt"></i> Reset Filters
+                </button>
+            </div>
+        </div>
+        
+        <!-- Course Grid -->
+        <div class="col-lg-9">
+            <!-- Search and Sort -->
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="search-bar">
+                        <form method="get" id="searchForm">
+                            <input type="text" name="q" placeholder="Search for courses..." 
+                                   value="{{ request.GET.q }}" id="searchInput">
+                            <button type="submit"><i class="fas fa-search"></i> Search</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="sort-dropdown">
+                        <select id="sortSelect">
+                            <option value="newest">Newest First</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Count -->
+            <div class="mb-3">
+                <p class="results-count text-muted">Showing {{ courses|length }} courses</p>
+            </div>
+            
+            <!-- Courses Grid -->
+            <div class="row courses-grid" id="coursesContainer">
+                {% if courses %}
+                    {% for course in courses %}
+                    <div class="col-md-6 col-lg-12 course-item" 
+                         data-price="{{ course.price }}"
+                         data-level="{{ course.level }}"
+                         data-title="{{ course.title|lower }}">
+                        <div class="course-card">
+                            <div class="row g-0">
+                                <div class="col-md-3">
+                                    <div class="position-relative h-100">
+                                        {% if course.thumbnail %}
+                                            <img src="{{ course.thumbnail.url }}" class="course-image w-100 h-100" alt="{{ course.title }}" style="object-fit: cover;">
+                                        {% else %}
+                                            <div class="course-image bg-primary d-flex align-items-center justify-content-center w-100 h-100">
+                                                <i class="fas fa-graduation-cap fa-4x text-white"></i>
+                                            </div>
+                                        {% endif %}
+                                        {% if course.price == 0 %}
+                                            <span class="course-badge bg-success">Free</span>
+                                        {% else %}
+                                            <span class="course-badge bg-primary">Premium</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="p-3">
+                                        <h5 class="mb-1">
+                                            <a href="{% url 'course_detail' course.slug %}" class="text-decoration-none text-dark">
+                                                {{ course.title }}
+                                            </a>
+                                        </h5>
+                                        <div class="instructor-name">
+                                            <i class="fas fa-user"></i> {{ course.instructor.get_full_name|default:course.instructor.username }}
+                                        </div>
+                                        <p class="text-muted small mt-2">{{ course.description|truncatewords:30 }}</p>
+                                        <div class="course-stats">
+                                            <span><i class="fas fa-video"></i> {{ course.get_total_lectures }} lectures</span>
+                                            <span><i class="fas fa-clock"></i> {{ course.duration|default:"10 hours" }}</span>
+                                            <span><i class="fas fa-users"></i> {{ course.enrolled_students.count }} students</span>
+                                        </div>
+                                        <div class="mt-3 d-flex justify-content-between align-items-center">
+                                            <div>
+                                                {% if course.price == 0 %}
+                                                    <span class="course-price">Free</span>
+                                                {% else %}
+                                                    <span class="course-price">₹{{ course.price }}</span>
+                                                {% endif %}
+                                            </div>
+                                            <a href="{% url 'course_detail' course.slug %}" class="btn btn-primary btn-sm">
+                                                View Course <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="no-courses">
+                            <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                            <h4>No courses found</h4>
+                            <p class="text-muted">Try adjusting your search or filter criteria</p>
+                            <a href="{% url 'course_list' %}" class="btn btn-primary">Clear Filters</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if courses.has_other_pages %}
+            <nav>
+                <ul class="pagination">
+                    {% if courses.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ courses.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for num in courses.paginator.page_range %}
+                        {% if courses.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > courses.number|add:'-3' and num < courses.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if courses.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ courses.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/course-list.js' %}"></script>
+{% endblock %}

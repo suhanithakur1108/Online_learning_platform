@@ -1,0 +1,140 @@
+/* ============================================
+   STUDYHUB - Dark Mode Stylesheet
+   ============================================ */
+
+/* Dark Mode Variables */
+[data-bs-theme="dark"] {
+    --primary-color: #3b82f6;
+    --secondary-color: #8b5cf6;
+    --dark-bg: #0f0f1a;
+    --light-bg: #1a1a2e;
+    --text-dark: #e0e0e0;
+    --text-light: #a0a0a0;
+}
+
+/* Body Dark Mode */
+[data-bs-theme="dark"] body {
+    background-color: #0f0f1a;
+    color: #e0e0e0;
+}
+
+/* Navbar Dark Mode */
+[data-bs-theme="dark"] .navbar {
+    background: rgba(15, 15, 26, 0.95) !important;
+}
+
+[data-bs-theme="dark"] .navbar-nav .nav-link {
+    color: #e0e0e0 !important;
+}
+
+[data-bs-theme="dark"] .navbar-nav .nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Cards Dark Mode */
+[data-bs-theme="dark"] .card {
+    background-color: #1e1e2e;
+    color: #e0e0e0;
+    border: 1px solid #2d2d3d;
+}
+
+/* Forms Dark Mode */
+[data-bs-theme="dark"] .form-control {
+    background-color: #2d2d3d;
+    border-color: #3d3d4d;
+    color: #e0e0e0;
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+    background-color: #2d2d3d;
+    border-color: var(--primary-color);
+    color: #e0e0e0;
+}
+
+/* Footer Dark Mode */
+[data-bs-theme="dark"] .footer {
+    background: #0a0a0a;
+}
+
+/* Alert Dark Mode */
+[data-bs-theme="dark"] .alert {
+    background-color: #1e1e2e;
+    border-color: #2d2d3d;
+}
+
+[data-bs-theme="dark"] .alert-success {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+[data-bs-theme="dark"] .alert-danger {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+/* Dropdown Dark Mode */
+[data-bs-theme="dark"] .dropdown-menu {
+    background-color: #1e1e2e;
+    border: 1px solid #2d2d3d;
+}
+
+[data-bs-theme="dark"] .dropdown-item {
+    color: #e0e0e0;
+}
+
+[data-bs-theme="dark"] .dropdown-item:hover {
+    background-color: #2d2d3d;
+    color: var(--primary-color);
+}
+
+/* Pagination Dark Mode */
+[data-bs-theme="dark"] .page-link {
+    background-color: #1e1e2e;
+    border-color: #2d2d3d;
+    color: #e0e0e0;
+}
+
+[data-bs-theme="dark"] .page-link:hover {
+    background-color: #2d2d3d;
+}
+
+[data-bs-theme="dark"] .page-item.active .page-link {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+/* Progress Bar Dark Mode */
+[data-bs-theme="dark"] .progress {
+    background-color: #2d2d3d;
+}
+
+/* Modal Dark Mode */
+[data-bs-theme="dark"] .modal-content {
+    background-color: #1e1e2e;
+    border: 1px solid #2d2d3d;
+}
+
+[data-bs-theme="dark"] .modal-header {
+    border-bottom-color: #2d2d3d;
+}
+
+[data-bs-theme="dark"] .modal-footer {
+    border-top-color: #2d2d3d;
+}
+
+/* Scrollbar Dark Mode */
+[data-bs-theme="dark"] ::-webkit-scrollbar {
+    width: 10px;
+}
+
+[data-bs-theme="dark"] ::-webkit-scrollbar-track {
+    background: #1e1e2e;
+}
+
+[data-bs-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    border-radius: 5px;
+}
+
+[data-bs-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #8b5cf6;
+}

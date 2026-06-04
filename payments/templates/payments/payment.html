@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment | StudyHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h3 class="text-center mb-4">Complete Payment</h3>
+                    
+                    <div class="bg-light p-3 rounded mb-4">
+                        <p class="mb-1"><strong>Course:</strong> {{ course.title }}</p>
+                        <p class="mb-0"><strong>Amount:</strong> ₹{{ course.price }}</p>
+                    </div>
+                    
+                    <button id="payBtn" class="btn btn-primary w-100 py-2">
+                        <i class="fas fa-credit-card"></i> Pay ₹{{ course.price }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.getElementById('payBtn').onclick = function() {
+        var options = {
+            key: "{{ razorpay_key }}",
+            amount: "{{ amount }}",
+            currency: "INR",
+            name: "StudyHub",
+            description: "{{ course.title }}",
+            order_id: "{{ order_id }}",
+            handler: function(response) {
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{% url 'payment_success' %}";
+                
+                form.innerHTML = `
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    <input type="hidden" name="razorpay_order_id" value="${response.razorpay_order_id}">
+                    <input type="hidden" name="razorpay_payment_id" value="${response.razorpay_payment_id}">
+                    <input type="hidden" name="razorpay_signature" value="${response.razorpay_signature}">
+                `;
+                
+                document.body.appendChild(form);
+                form.submit();
+            },
+            prefill: {
+                name: "{{ user_name }}",
+                email: "{{ user_email }}"
+            },
+            theme: { color: "#1e3c72" }
+        };
+        
+        var rzp = new Razorpay(options);
+        rzp.open();
+    };
+</script>
+{% endblock %}

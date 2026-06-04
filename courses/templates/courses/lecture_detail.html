@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ lecture.title }} | {{ course.title }} | StudyHub{% endblock %}
+
+{% block content %}
+<section class="lecture-section py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Video Player Column -->
+            <div class="col-lg-8">
+                <!-- 🎥 YOUTUBE VIDEO PLAYER - WORKING CODE -->
+                <div class="video-wrapper mb-4">
+                    {% if lecture.video_url %}
+                        {% with video_url=lecture.video_url %}
+                            {% if "youtu.be" in video_url %}
+                                <iframe 
+                                    width="100%" 
+                                    height="450" 
+                                    src="https://www.youtube.com/embed/{{ video_url|cut:'https://youtu.be/'|cut:'http://youtu.be/' }}"
+                                    title="{{ lecture.title }}"
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                            {% elif "watch?v=" in video_url %}
+                                <iframe 
+                                    width="100%" 
+                                    height="450" 
+                                    src="https://www.youtube.com/embed/{{ video_url|cut:'https://www.youtube.com/watch?v='|cut:'http://www.youtube.com/watch?v=' }}"
+                                    title="{{ lecture.title }}"
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                            {% elif "youtube.com/embed/" in video_url %}
+                                <iframe 
+                                    width="100%" 
+                                    height="450" 
+                                    src="{{ video_url }}"
+                                    title="{{ lecture.title }}"
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                            {% else %}
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>Invalid Video URL Format</strong><br>
+                                    Please use one of these formats:<br>
+                                    • https://www.youtube.com/watch?v=VIDEO_ID<br>
+                                    • https://youtu.be/VIDEO_ID<br>
+                                    • https://www.youtube.com/embed/VIDEO_ID
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No video available for this lecture yet.
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Lecture Info -->
+                <div class="lecture-info mb-4">
+                    <h2>{{ lecture.title }}</h2>
+                    <p class="text-muted">
+                        <i class="fas fa-clock me-2"></i> {{ lecture.duration|default:"10" }} minutes
+                        <span class="mx-2">•</span>
+                        <i class="fas fa-chalkboard-teacher me-2"></i> {{ course.instructor.username }}
+                    </p>
+                    <hr>
+                    <div class="lecture-description">
+                        <h5>Lecture Description</h5>
+                        <p>{{ lecture.description|default:"No description available." }}</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation Buttons -->
+                <div class="lecture-navigation mt-4">
+                    <div class="row">
+                        <div class="col-6">
+                            {% if previous_lecture %}
+                                <a href="{% url 'lecture_detail' course.slug previous_lecture.id %}" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-chevron-left me-2"></i> Previous: {{ previous_lecture.title|truncatechars:30 }}
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 text-end">
+                            {% if next_lecture %}
+                                <a href="{% url 'lecture_detail' course.slug next_lecture.id %}" class="btn btn-primary w-100">
+                                    Next: {{ next_lecture.title|truncatechars:30 }} <i class="fas fa-chevron-right ms-2"></i>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'course_detail' course.slug %}" class="btn btn-success w-100">
+                                    <i class="fas fa-trophy me-2"></i> Course Completed!
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar - Course Content -->
+            <div class="col-lg-4">
+                <div class="card sticky-top" style="top: 80px;">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list-ul me-2"></i>
+                            Course Content
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="course-progress p-3 border-bottom">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>Your Progress</small>
+                                <small>{{ enrollment.progress|default:0 }}%</small>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: {{ enrollment.progress|default:0 }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="list-group list-group-flush" style="max-height: 500px; overflow-y: auto;">
+                            {% for section in course.sections.all %}
+                                <div class="list-group-item">
+                                    <strong class="d-block mb-2">
+                                        <i class="fas fa-folder-open me-2"></i>
+                                        {{ section.title }}
+                                    </strong>
+                                    <small class="text-muted d-block mb-2">{{ section.lectures.count }} lectures</small>
+                                    
+                                    {% for sec_lecture in section.lectures.all %}
+                                        <div class="lecture-link {% if sec_lecture.id == lecture.id %}active-lecture{% endif %} mt-2">
+                                            <a href="{% url 'lecture_detail' course.slug sec_lecture.id %}" 
+                                               class="d-block text-decoration-none {% if sec_lecture.id == lecture.id %}text-primary fw-bold{% else %}text-dark{% endif %}">
+                                                <i class="fa-solid fa-circle-play me-2"></i>
+                                                {{ sec_lecture.title }}
+                                                <small class="text-muted d-block ms-4">{{ sec_lecture.duration|default:"10" }} min</small>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% empty %}
+                                <div class="list-group-item text-center py-4">
+                                    <i class="fas fa-folder-open fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted mb-0">No sections added yet.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .video-wrapper {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+    
+    .lecture-link {
+        margin-left: 20px;
+        margin-top: 10px;
+        padding: 5px 0;
+    }
+    
+    .active-lecture {
+        background: #e3f2fd;
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin-left: 8px;
+        border-left: 3px solid #007bff;
+    }
+    
+    .active-lecture a {
+        color: #007bff !important;
+        font-weight: 600 !important;
+    }
+    
+    .lecture-link a:hover {
+        color: #007bff !important;
+    }
+    
+    .lecture-info h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+    
+    .lecture-navigation {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #dee2e6;
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+    }
+    
+    .progress-bar {
+        transition: width 0.5s ease;
+    }
+    
+    /* Scrollbar styling */
+    .list-group-flush::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .list-group-flush::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    
+    .list-group-flush::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+    
+    .list-group-flush::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
+
+{% block extra_js %}
+<script>
+    // Auto-mark lecture as completed when video is watched
+    document.addEventListener('DOMContentLoaded', function() {
+        // You can add progress tracking logic here
+        console.log('Lecture page loaded: {{ lecture.title }}');
+    });
+</script>
+{% endblock %}
+{% endblock %}

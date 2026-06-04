@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}My Learning | StudyHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">My Learning</h2>
+
+    {% if enrollments %}
+        <div class="row">
+            {% for enrollment in enrollments %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ enrollment.course.title }}</h5>
+                        <p class="card-text text-muted small">{{ enrollment.course.description|truncatewords:10 }}</p>
+                        
+                        <div class="mb-2">
+                            <small>Progress: {{ enrollment.progress }}%</small>
+                            <div class="progress" style="height: 5px;">
+                                <div class="progress-bar bg-primary" style="width: {{ enrollment.progress }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'course_detail' enrollment.course.slug %}" class="btn btn-primary btn-sm w-100">
+                            Continue Learning
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No courses enrolled yet. 
+            <a href="{% url 'course_list' %}">Browse Courses</a>
+        </div>
+    {% endif %}
+
+  
+</div>
+{% endblock %}

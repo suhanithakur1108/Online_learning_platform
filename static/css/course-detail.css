@@ -1,0 +1,127 @@
+/* Course Detail Page */
+
+.course-hero {
+    background: #1e3c72;
+    padding: 60px 0;
+    color: white;
+}
+
+.meta-item {
+    display: inline-block;
+    margin-right: 30px;
+    margin-bottom: 10px;
+}
+
+.meta-item i {
+    margin-right: 8px;
+}
+
+.learn-card, .curriculum-card, .instructor-card {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid #eef2f6;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.learn-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.learn-list li {
+    margin-bottom: 10px;
+}
+
+.learn-list li i {
+    color: #28a745;
+    margin-right: 10px;
+}
+
+.lecture-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #eef2f6;
+}
+
+.lecture-item:hover {
+    background: #fafbfc;
+}
+
+.accordion-button {
+    background: white;
+    padding: 15px 20px;
+}
+
+.accordion-button:not(.collapsed) {
+    background: #f8f9fa;
+    color: #1e3c72;
+}
+
+.enroll-card {
+    position: sticky;
+    top: 100px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.enroll-card img {
+    height: 180px;
+    object-fit: cover;
+}
+
+.feature-item {
+    margin-bottom: 12px;
+}
+
+.feature-item i {
+    width: 24px;
+    color: #28a745;
+}
+
+.course-includes ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+.course-includes li {
+    margin-bottom: 8px;
+}
+
+.course-includes li i {
+    width: 24px;
+}
+
+.progress {
+    height: 6px;
+}
+
+.share-buttons {
+    margin-top: 10px;
+}
+
+.share-buttons a {
+    display: inline-block;
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .course-hero {
+        padding: 40px 0;
+    }
+    
+    .enroll-card {
+        position: static;
+        margin-top: 25px;
+    }
+    
+    .meta-item {
+        display: block;
+        margin-right: 0;
+    }
+}

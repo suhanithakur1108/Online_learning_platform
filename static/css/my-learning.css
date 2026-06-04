@@ -1,0 +1,95 @@
+/* My Learning Page Styles */
+.my-learning-container {
+    padding: 30px 0;
+    min-height: calc(100vh - 200px);
+}
+
+.learning-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.learning-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.learning-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.stat-card i {
+    font-size: 2rem;
+    color: #1e3c72;
+    margin-bottom: 10px;
+}
+
+.stat-card h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #1e3c72;
+}
+
+.stat-card p {
+    margin: 0;
+    color: #6c757d;
+}
+
+/* Dark Mode */
+[data-bs-theme="dark"] .stat-card {
+    background: #1e1e2e;
+}
+
+[data-bs-theme="dark"] .stat-card h3 {
+    color: #3b82f6;
+}
+
+[data-bs-theme="dark"] .stat-card i {
+    color: #3b82f6;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .learning-header h1 {
+        font-size: 1.8rem;
+    }
+}
